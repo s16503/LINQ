@@ -298,12 +298,15 @@ namespace LinqConsoleApp
         /// Zwróć wartość "true" jeśli choć jeden
         /// z elementów kolekcji pracuje jako "Backend programmer".
         /// </summary>
-        public void Przyklad8()
+        public bool Przyklad8()
         {
             var res = Emps.Where(emp => emp.Job == "Backend programmer").Count();
 
-            //if(res.TryFormat())
-            Console.WriteLine(res);
+            if ((int)res > 0)
+                return true;
+
+
+            return false;
 
         }
 
@@ -314,6 +317,12 @@ namespace LinqConsoleApp
         public void Przyklad9()
         {
 
+            var res = Emps.Where(emp => emp.Job == "Frontend programmer").OrderByDescending(Emps => Emps.HireDate).First();
+
+          
+                Console.WriteLine(res);
+            
+
         }
 
         /// <summary>
@@ -323,12 +332,42 @@ namespace LinqConsoleApp
         /// </summary>
         public void Przyklad10Button_Click()
         {
+            var anon = new
+            {
+                Ename = "Brak wartości",
+                Job = (string)null,
+                Hiredate = (string)null
+            };
+
+            var list = new List<object>
+            {
+                anon
+            };
+
+            var res = Emps.Select(emp => new
+            {
+                Ename = emp.Ename,
+                Job = emp.Job,
+                Hiredate = emp.HireDate
+            }
+                ).Union(list);
+
+
+            // Console.WriteLine(list);
+
+            foreach (var i in res)
+            {
+                Console.WriteLine(i);
+            }
 
         }
 
         //Znajdź pracownika z najwyższą pensją wykorzystując metodę Aggregate()
         public void Przyklad11()
         {
+            var res = Emps.Select(emp => emp.Salary).Aggregate(0,(max,next)=>next >max ? next : max);
+            Console.WriteLine(res);
+
 
         }
 
@@ -336,6 +375,16 @@ namespace LinqConsoleApp
         //typu CROSS JOIN
         public void Przyklad12()
         {
+            var res = Emps.SelectMany(emp => Depts, (emp, dept) => new
+            {
+                Emp = emp,
+                Dept = dept
+            });
+
+            foreach (var i in res)
+            {
+                Console.WriteLine(i);
+            }
 
         }
     }
